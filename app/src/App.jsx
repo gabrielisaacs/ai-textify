@@ -1,10 +1,12 @@
 import React from 'react'
 import NavBar from './components/NavBar'
+import TextBar from './components/TextBar'
 
 const App = () => {
   return (
-    <div className='flex bg-[#0a0a0a] w-full h-screen'>
+    <div className='flex bg-[#000] w-full h-screen'>
       <NavBar />
+      <TextBar />
     </div>
   )
 }
