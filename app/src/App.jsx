@@ -1,18 +1,22 @@
 import React, { useState } from 'react'
 import NavBar from './components/NavBar'
 import TextBar from './components/TextBar'
-import SideBar from './components/Sidebar'
+import SideBar from './components/SideBar'
 import ChatWindow from './components/ChatWindow'
+import WelcomeScreen from './components/WelcomeScreen'
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [messages, setMessages] = useState([])
+  const [showWelcome, setShowWelcome] = useState(true)
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
   }
 
   const handleSend = async (text) => {
+    if (showWelcome) setShowWelcome(false)
+
     const newMessage = { text, language: "detecting...", id: Date.now() }
     setMessages([...messages, newMessage])
 
@@ -62,13 +66,18 @@ const App = () => {
     return "unknown"
   }
 
+  const handleHomeClick = () => {
+    setShowWelcome(true)
+    setMessages([])
+  }
+
   return (
     <div className='flex flex-col bg-[#000] w-full h-screen overflow-x-hidden overflow-y-auto custom-scrollbar'>
-      <NavBar onSidebarToggle={toggleSidebar} />
+      <NavBar onSidebarToggle={toggleSidebar} onHomeClick={handleHomeClick} />
       <div className={`flex flex-1 relative mt-[4rem] transition-all duration-300 ${isSidebarOpen ? 'ml-[20rem]' : 'ml-0'}`}>
         <SideBar isOpen={isSidebarOpen} />
         <main className="flex-1 overflow-y-auto">
-          <ChatWindow messages={messages} setMessages={setMessages} />
+          {showWelcome ? <WelcomeScreen /> : <ChatWindow messages={messages} setMessages={setMessages} />}
         </main>
       </div>
       <TextBar isSidebarOpen={isSidebarOpen} onSend={handleSend} />
