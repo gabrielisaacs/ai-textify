@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import getLanguageName from '../utils/languageMapper'
+import { NotepadText, Languages } from 'lucide-react'
 
 const ChatWindow = ({ messages, setMessages }) => {
   const [language, setLanguage] = useState("en")
@@ -28,19 +30,21 @@ const ChatWindow = ({ messages, setMessages }) => {
   }
 
   return (
-    <div className="sm:p-4 lg:py-4 lg:px-10 lg:w-3/4 mx-auto flex flex-col gap-4 ">
+    <div className="sm:p-4 lg:pt-4 lg:px-10 lg:mb-[7rem] lg:w-3/4 mx-auto flex flex-col gap-4">
       {messages.map((msg) => (
         <div key={msg.id} className="flex flex-col p-4 shadow-lg text-[1rem]">
           <p className="text-[#fff] mb-2 bg-[#000] p-8 rounded-lg max-w-[40rem] shadow-lg border border-neutral-800 ml-auto text-justify">{msg.text}</p>
-          <p className="text-xs text-neutral-400 mb-2">Language Detected: {msg.language}</p>
-          {msg.summarize && !msg.summary && (
-            <button onClick={() => handleSummarize(msg.id)} className="text-blue-500 mb-2">Summarize</button>
-          )}
-          {msg.summary && (
-            <p className="text-xs text-green-500 mb-2">Summary: {msg.summary}</p>
-          )}
-          <div className="flex items-center gap-2">
-            <select value={language} onChange={(e) => setLanguage(e.target.value)} className="text-neutral-900 p-1 rounded-md">
+          <p className="text-sm p-2 w-max ml-auto text-neutral-500 mb-2">Language Detected: {getLanguageName(msg.language)}</p>
+          <div className="flex items-center justify-end gap-2 mb-4">
+            <button onClick={() => handleSummarize(msg.id)} className="bg-[#0a0] hover:bg-opacity-80 font-display font-bold border w-max px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2">
+              <NotepadText size={20} />
+              Summarize
+            </button>
+            <button onClick={() => handleTranslate(msg.id)} className="bg-[#3b82f6] text-white hover:bg-opacity-80 font-display font-bold border w-max px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2">
+              <Languages size={20} className='text-white' />
+              Translate
+            </button>
+            <select value={language} onChange={(e) => setLanguage(e.target.value)} className="text-[#000] bg-[#fff] px-6 py-3 font-display rounded-md outline-none">
               <option value="en">English</option>
               <option value="pt">Portuguese</option>
               <option value="es">Spanish</option>
@@ -48,10 +52,12 @@ const ChatWindow = ({ messages, setMessages }) => {
               <option value="tr">Turkish</option>
               <option value="fr">French</option>
             </select>
-            <button onClick={() => handleTranslate(msg.id)} className="text-blue-500">Translate</button>
           </div>
+          {msg.summary && (
+            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-8 rounded-lg max-w-[40rem] border border-neutral-800 shadow-lg">Summary: {msg.summary}</p>
+          )}
           {msg.translation && (
-            <p className="text-[1rem] text-[#fff] mt-2 mb-[10rem] bg-[#000] p-8 rounded-lg max-w-[40rem] border border-neutral-800 shadow-lg">Translation: {msg.translation}</p>
+            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-8 rounded-lg max-w-[40rem] border border-neutral-800 shadow-lg">Translation: {msg.translation}</p>
           )}
         </div>
       ))}
