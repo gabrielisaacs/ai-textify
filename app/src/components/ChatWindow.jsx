@@ -23,7 +23,7 @@ const ChatWindow = ({ messages, setMessages }) => {
   }
 
   return (
-    <div className="p-4">
+    <div className="py-4 px-10">
       {messages.map((msg) => (
         <div key={msg.id} className="mb-4">
           <p className="text-white">{msg.text}</p>
