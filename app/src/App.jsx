@@ -63,7 +63,7 @@ const App = () => {
   }
 
   return (
-    <div className='flex flex-col bg-[#000] w-full h-screen overflow-x-hidden overflow-y-auto'>
+    <div className='flex flex-col bg-[#000] w-full h-screen overflow-x-hidden overflow-y-auto custom-scrollbar'>
       <NavBar onSidebarToggle={toggleSidebar} />
       <div className={`flex flex-1 relative mt-[4rem] transition-all duration-300 ${isSidebarOpen ? 'ml-[20rem]' : 'ml-0'}`}>
         <SideBar isOpen={isSidebarOpen} />
