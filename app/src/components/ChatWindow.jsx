@@ -46,7 +46,7 @@ const ChatWindow = ({ messages, setMessages }) => {
     <div className="sm:p-4 lg:pt-4 lg:px-10 lg:mb-[7rem] lg:w-3/4 mx-auto flex flex-col gap-4">
       {messages.map((msg) => (
         <div key={msg.id} className="flex flex-col p-4 shadow-lg text-[1rem]">
-          <p className="text-[#fff] mb-2 bg-[#111111] p-8 rounded-lg max-w-[30rem] shadow-lg ml-auto text-justify">{msg.text}</p>
+          <p className="text-[#fff] mb-2 bg-[#111111] p-4 rounded-lg max-w-[30rem] shadow-lg ml-auto text-justify">{msg.text}</p>
           <p className="text-sm p-2 w-max ml-auto text-neutral-500 mb-2">Language Detected: {getLanguageName(msg.language)}</p>
           <div className="flex items-center justify-end gap-2 mb-4">
             <button onClick={() => handleSummarize(msg.id)} className="bg-[#0a0] hover:bg-opacity-80 font-display font-bold border w-max px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2" disabled={loadingMessageId === msg.id}>
@@ -67,13 +67,13 @@ const ChatWindow = ({ messages, setMessages }) => {
             </select>
           </div>
           {msg.summary && (
-            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-8 rounded-lg max-w-[40rem] border border-neutral-800 shadow-lg">Summary: {msg.summary}</p>
+            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-4 rounded-lg max-w-[40rem] border border-neutral-800 shadow-lg">Summary: {msg.summary}</p>
           )}
           {msg.translation && (
-            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-8 rounded-lg max-w-[40rem] border border-neutral-800 shadow-lg">Translation: {msg.translation}</p>
+            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-4 rounded-lg max-w-[40rem] border border-neutral-800 shadow-lg">Translation: {msg.translation}</p>
           )}
           {error && (
-            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-red-600 p-4 rounded-lg max-w-[40rem] border border-neutral-800 shadow-lg">{error}</p>
+            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-red-600 p-2 rounded-lg max-w-[40rem] border border-neutral-800 shadow-lg">{error}</p>
           )}
         </div>
       ))}
