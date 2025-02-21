@@ -28,19 +28,19 @@ const ChatWindow = ({ messages, setMessages }) => {
   }
 
   return (
-    <div className="p-4">
+    <div className="sm:p-4 lg:py-4 lg:px-10 lg:w-3/4 mx-auto flex flex-col gap-4 ">
       {messages.map((msg) => (
-        <div key={msg.id} className="mb-4">
-          <p className="text-white">{msg.text}</p>
-          <p className="text-neutral-400">Language: {msg.language}</p>
+        <div key={msg.id} className="flex flex-col p-4 shadow-lg text-[1rem]">
+          <p className="text-[#fff] mb-2 bg-[#000] p-8 rounded-lg max-w-[40rem] shadow-lg border border-neutral-800 ml-auto text-justify">{msg.text}</p>
+          <p className="text-xs text-neutral-400 mb-2">Language Detected: {msg.language}</p>
           {msg.summarize && !msg.summary && (
-            <button onClick={() => handleSummarize(msg.id)} className="text-blue-500">Summarize</button>
+            <button onClick={() => handleSummarize(msg.id)} className="text-blue-500 mb-2">Summarize</button>
           )}
           {msg.summary && (
-            <p className="text-green-500">Summary: {msg.summary}</p>
+            <p className="text-xs text-green-500 mb-2">Summary: {msg.summary}</p>
           )}
-          <div className="mt-2">
-            <select value={language} onChange={(e) => setLanguage(e.target.value)} className="mr-2">
+          <div className="flex items-center gap-2">
+            <select value={language} onChange={(e) => setLanguage(e.target.value)} className="text-neutral-900 p-1 rounded-md">
               <option value="en">English</option>
               <option value="pt">Portuguese</option>
               <option value="es">Spanish</option>
@@ -51,7 +51,7 @@ const ChatWindow = ({ messages, setMessages }) => {
             <button onClick={() => handleTranslate(msg.id)} className="text-blue-500">Translate</button>
           </div>
           {msg.translation && (
-            <p className="text-yellow-500">Translation: {msg.translation}</p>
+            <p className="text-[1rem] text-[#fff] mt-2 mb-[10rem] bg-[#000] p-8 rounded-lg max-w-[40rem] border border-neutral-800 shadow-lg">Translation: {msg.translation}</p>
           )}
         </div>
       ))}
