@@ -5,9 +5,14 @@ const ChatWindow = ({ messages, setMessages }) => {
 
   const handleSummarize = async (id) => {
     const message = messages.find(msg => msg.id === id)
-    const summary = await summarizeText(message.text)
-    message.summary = summary
-    setMessages([...messages])
+    try {
+      const summary = await summarizeText(message.text)
+      message.summary = summary
+      setMessages([...messages])
+    } catch (error) {
+      console.error("Summarization error:", error)
+      alert("Unable to summarize the text. The Summarizer API is not usable on this device.")
+    }
   }
 
   const handleTranslate = async (id) => {
@@ -23,7 +28,7 @@ const ChatWindow = ({ messages, setMessages }) => {
   }
 
   return (
-    <div className="py-4 px-10">
+    <div className="p-4">
       {messages.map((msg) => (
         <div key={msg.id} className="mb-4">
           <p className="text-white">{msg.text}</p>
@@ -55,9 +60,38 @@ const ChatWindow = ({ messages, setMessages }) => {
 }
 
 const summarizeText = async (text) => {
-  // Call your summarizer API here
-  // For now, we'll fake it
-  return "This is a fake summary."
+  if ('ai' in self && 'summarizer' in self.ai) {
+    const summarizerCapabilities = await self.ai.summarizer.capabilities()
+    const available = summarizerCapabilities.available
+    let summarizer
+
+    if (available === 'no') {
+      throw new Error('Summarizer API not usable')
+    }
+    if (available === 'readily') {
+      summarizer = await self.ai.summarizer.create({
+        type: 'tl;dr',
+        format: 'plain-text',
+        length: 'short'
+      })
+    } else if (available === 'after-download') {
+      summarizer = await self.ai.summarizer.create({
+        type: 'tl;dr',
+        format: 'plain-text',
+        length: 'short',
+        monitor(m) {
+          m.addEventListener('downloadprogress', (e) => {
+            console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`)
+          })
+        },
+      })
+      await summarizer.ready
+    }
+
+    const summary = await summarizer.summarize(text)
+    return summary
+  }
+  throw new Error('Summarizer API not supported')
 }
 
 const translateText = async (text, targetLanguage) => {
