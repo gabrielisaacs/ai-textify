@@ -3,7 +3,7 @@ import { Home, BookOpenText, Settings, Github, Menu } from 'lucide-react'
 
 const NavBar = ({ onSidebarToggle }) => {
   return (
-    <div className='items-center h-[4rem] w-full border-b px-4 md:px-10 py-3 border-neutral-800 bg-black bg-opacity-20 backdrop-blur-sm fixed top-0 z-50 font-display'>
+    <div className='items-center h-[4rem] w-full border-b px-4 md:px-10 py-3 border-neutral-800 bg-black bg-opacity-20 backdrop-blur-lg fixed top-0 z-50 font-display'>
       <div className="flex flex-row items-center gap-4">
         <button
           onClick={onSidebarToggle}
@@ -18,9 +18,6 @@ const NavBar = ({ onSidebarToggle }) => {
           </a>
         </div>
         <div className="hidden md:flex flex-row text-white text-md gap-8 ml-auto">
-          <a href="#" className="inline-flex gap-2 items-center hover:opacity-60 transition-all duration-200">
-            <Home size={20} /> Home
-          </a>
           <a href="#" className="inline-flex gap-2 items-center hover:opacity-60 transition-all duration-200">
             <BookOpenText size={20} /> User Guide
           </a>
