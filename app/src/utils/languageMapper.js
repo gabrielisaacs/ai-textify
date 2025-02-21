@@ -5,6 +5,14 @@ const languageMap = {
   pt: 'Portuguese',
   tr: 'Turkish',
   es: 'Spanish',
+  de: 'German',
+  it: 'Italian',
+  ja: 'Japanese',
+  ko: 'Korean',
+  zh: 'Chinese',
+  ar: 'Arabic',
+  hi: 'Hindi',
+  bn: 'Bengali',
 };
 
 const getLanguageName = (languageCode) => {
