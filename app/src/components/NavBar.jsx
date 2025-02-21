@@ -18,12 +18,12 @@ const NavBar = ({ onSidebarToggle }) => {
           </a>
         </div>
         <div className="hidden md:flex flex-row text-white text-md gap-8 ml-auto">
-          <a href="#" className="inline-flex gap-2 items-center hover:opacity-60 transition-all duration-200">
+          {/* <a href="#" className="inline-flex gap-2 items-center hover:opacity-60 transition-all duration-200">
             <BookOpenText size={20} /> User Guide
           </a>
           <a href="#" className="inline-flex gap-2 items-center hover:opacity-60 transition-all duration-200">
             <Settings size={20} /> Settings
-          </a>
+          </a> */}
           <a href="#" className="inline-flex gap-2 items-center transition-all duration-200">
             <button className="flex flex-row bg-transparent border border-neutral-700 rounded-lg px-3 py-2 text-center justify-center items-center gap-1 bg-neutral-950 hover:bg-neutral-800 transition-all duration-200">
               <Github size={18} /> GitHub
