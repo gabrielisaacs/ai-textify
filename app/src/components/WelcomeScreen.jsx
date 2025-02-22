@@ -9,7 +9,7 @@ const WelcomeScreen = () => {
       <p className="text-center text-lg gap-2 justify-center mt-2 max-w-[25rem] text-neutral-400">
         I can detect language, translate and summarize text. Type below to begin...
       </p>
-      <div className="h-[5rem]"></div>
+      <div className="h-[5rem] sm:hidden md:flex"></div>
     </div>
   )
 }
