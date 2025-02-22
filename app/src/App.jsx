@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import NavBar from './components/NavBar'
 import TextBar from './components/TextBar'
-import SideBar from './components/Sidebar'
+import SideBar from './components/SideBar'
 import ChatWindow from './components/ChatWindow'
 import WelcomeScreen from './components/WelcomeScreen'
 
@@ -74,7 +74,7 @@ const App = () => {
   return (
     <div className='flex flex-col bg-[#000] w-full h-screen overflow-x-hidden overflow-y-auto custom-scrollbar'>
       <NavBar onSidebarToggle={toggleSidebar} onHomeClick={handleHomeClick} />
-      <div className={`flex flex-1 relative mt-[4rem] transition-all duration-300 ${isSidebarOpen ? 'ml-[20rem]' : 'ml-0'}`}>
+      <div className={`flex flex-1 relative mt-[4rem] transition-all duration-300 ${isSidebarOpen ? 'lg:ml-[20rem]' : 'ml-0'}`}>
         <SideBar isOpen={isSidebarOpen} />
         <main className="flex-1 overflow-y-auto">
           {showWelcome ? <WelcomeScreen /> : <ChatWindow messages={messages} setMessages={setMessages} />}

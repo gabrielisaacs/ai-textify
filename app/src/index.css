@@ -28,3 +28,38 @@
   border-radius: 10px;
   border: 2px solid #333;
 }
+
+@media (max-width: 768px) {
+  .lg\:h-3\/4 {
+    height: auto;
+  }
+
+  .lg\:pt-4 {
+    padding-top: 1rem;
+  }
+
+  .lg\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  .lg\:mb-\[7rem\] {
+    margin-bottom: 1.75rem;
+  }
+
+  .lg\:w-3\/4 {
+    width: 100%;
+  }
+
+  .lg\:max-w-\[30rem\] {
+    max-width: 100%;
+  }
+
+  .lg\:max-w-\[40rem\] {
+    max-width: 100%;
+  }
+
+  .lg\:ml-\[20rem\] {
+    margin-left: 0;
+  }
+}
