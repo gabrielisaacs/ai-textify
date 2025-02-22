@@ -48,16 +48,16 @@ const ChatWindow = ({ messages, setMessages }) => {
         <div key={msg.id} className="flex flex-col p-4 shadow-lg text-[1rem]">
           <p className="text-[#fff] mb-2 bg-[#111111] p-4 rounded-lg max-w-full lg:max-w-[30rem] shadow-lg ml-auto text-justify">{msg.text}</p>
           <p className="text-sm p-2 w-max ml-auto text-neutral-500 mb-2">Language Detected: {getLanguageName(msg.language)}</p>
-          <div className="flex items-center justify-end gap-2 mb-4">
-            <button onClick={() => handleSummarize(msg.id)} className="bg-[#0a0] hover:bg-opacity-80 font-display font-bold border w-max px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2" disabled={loadingMessageId === msg.id}>
+          <div className="flex lg:flex-row flex-col items-center justify-end ml-auto gap-2 mb-4">
+            <button onClick={() => handleSummarize(msg.id)} className="bg-[#0a0] hover:bg-opacity-80 font-display font-bold border w-[10rem] px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2" disabled={loadingMessageId === msg.id}>
               <NotepadText size={20} />
               {loadingMessageId === msg.id ? "Summarizing..." : "Summarize"}
             </button>
-            <button onClick={() => handleTranslate(msg.id)} className="bg-[#3b82f6] text-white hover:bg-opacity-80 font-display font-bold border w-max px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2" disabled={loadingMessageId === msg.id}>
+            <button onClick={() => handleTranslate(msg.id)} className="bg-[#3b82f6] text-white hover:bg-opacity-80 font-display font-bold border w-[10rem] px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2" disabled={loadingMessageId === msg.id}>
               <Languages size={20} className='text-white' />
               {loadingMessageId === msg.id ? "Translating..." : "Translate"}
             </button>
-            <select value={language} onChange={(e) => setLanguage(e.target.value)} className="text-[#000] bg-[#fff] px-0 py-3 font-display rounded-md outline-none">
+            <select value={language} onChange={(e) => setLanguage(e.target.value)} className="text-[#000] bg-neutral-300 px-0 py-3 font-display w-[10rem] rounded-md outline-none">
               <option value="en">English</option>
               <option value="pt">Portuguese</option>
               <option value="es">Spanish</option>
