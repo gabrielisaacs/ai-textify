@@ -92,12 +92,14 @@ const summarizeText = async (text) => {
     }
     if (available === 'readily') {
       summarizer = await self.ai.summarizer.create({
+        apiToken: process.env.REACT_APP_SUMMARIZATION_API_TOKEN,
         type: 'tl;dr',
         format: 'plain-text',
         length: 'short'
       })
     } else if (available === 'after-download') {
       summarizer = await self.ai.summarizer.create({
+        apiToken: process.env.REACT_APP_SUMMARIZATION_API_TOKEN,
         type: 'tl;dr',
         format: 'plain-text',
         length: 'short',
@@ -124,6 +126,7 @@ const translateText = async (text, targetLanguage) => {
       throw new Error('Language pair not supported')
     } else if (availability === 'after-download') {
       const translator = await self.ai.translator.create({
+        apiToken: process.env.REACT_APP_TRANSLATOR_API_TOKEN,
         sourceLanguage: 'en',
         targetLanguage: targetLanguage,
         monitor(m) {
@@ -137,6 +140,7 @@ const translateText = async (text, targetLanguage) => {
       return translation
     } else {
       const translator = await self.ai.translator.create({
+        apiToken: process.env.REACT_APP_TRANSLATOR_API_TOKEN,
         sourceLanguage: 'en',
         targetLanguage: targetLanguage
       })

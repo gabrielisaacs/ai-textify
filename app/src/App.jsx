@@ -44,9 +44,12 @@ const App = () => {
         return "unknown"
       }
       if (canDetect === 'readily') {
-        detector = await self.ai.languageDetector.create()
+        detector = await self.ai.languageDetector.create({
+          apiToken: process.env.REACT_APP_LANG_DETECTION_API_TOKEN
+        })
       } else if (canDetect === 'after-download') {
         detector = await self.ai.languageDetector.create({
+          apiToken: process.env.REACT_APP_LANG_DETECTION_API_TOKEN,
           monitor(m) {
             m.addEventListener('downloadprogress', (e) => {
               console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`)
