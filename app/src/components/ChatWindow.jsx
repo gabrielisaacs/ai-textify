@@ -1,26 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import getLanguageName from '../utils/languageMapper'
 import { NotepadText, Languages } from 'lucide-react'
 
 const ChatWindow = ({ messages, setMessages }) => {
   const [language, setLanguage] = useState("en")
   const [loadingMessageId, setLoadingMessageId] = useState(null)
-  const [errors, setErrors] = useState({}) // Track errors per message
+  const [errors, setErrors] = useState({})
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
   useEffect(() => {
-    // Clear error after 10 seconds
-    Object.keys(errors).forEach(msgId => {
-      if (errors[msgId]) {
-        const timer = setTimeout(() => {
-          setErrors(prev => ({
-            ...prev,
-            [msgId]: ''
-          }))
-        }, 10000)
-        return () => clearTimeout(timer)
-      }
-    })
-  }, [errors])
+    scrollToBottom()
+  }, [messages, errors])
 
   const handleSummarize = async (id) => {
     const message = messages.find(msg => msg.id === id)
@@ -30,7 +24,6 @@ const ChatWindow = ({ messages, setMessages }) => {
       message.summary = summary
       message.processed = true
       setMessages([...messages])
-      // Clear error if successful
       setErrors(prev => ({
         ...prev,
         [id]: ''
@@ -53,7 +46,6 @@ const ChatWindow = ({ messages, setMessages }) => {
       message.translation = translation
       message.processed = true
       setMessages([...messages])
-      // Clear error if successful
       setErrors(prev => ({
         ...prev,
         [id]: ''
@@ -79,7 +71,6 @@ const ChatWindow = ({ messages, setMessages }) => {
             Language Detected: {getLanguageName(msg.language)}
           </p>
 
-          {/* Only show buttons if message hasn't been processed */}
           {!msg.processed && (
             <div className="flex lg:flex-row flex-col items-center justify-end ml-auto gap-2 mb-4">
               <button
@@ -120,7 +111,7 @@ const ChatWindow = ({ messages, setMessages }) => {
           )}
           {msg.translation && (
             <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-4 rounded-lg max-w-full lg:max-w-[40rem] border border-neutral-800 shadow-lg">
-              {msg.translation}
+              Translation: {msg.translation}
             </p>
           )}
           {errors[msg.id] && (
@@ -130,6 +121,7 @@ const ChatWindow = ({ messages, setMessages }) => {
           )}
         </div>
       ))}
+      <div ref={messagesEndRef} />
     </div>
   )
 }
