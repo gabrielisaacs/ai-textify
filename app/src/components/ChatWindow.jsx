@@ -5,14 +5,22 @@ import { NotepadText, Languages } from 'lucide-react'
 const ChatWindow = ({ messages, setMessages }) => {
   const [language, setLanguage] = useState("en")
   const [loadingMessageId, setLoadingMessageId] = useState(null)
-  const [error, setError] = useState("")
+  const [errors, setErrors] = useState({}) // Track errors per message
 
   useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => setError(""), 10000)
-      return () => clearTimeout(timer)
-    }
-  }, [error])
+    // Clear error after 10 seconds
+    Object.keys(errors).forEach(msgId => {
+      if (errors[msgId]) {
+        const timer = setTimeout(() => {
+          setErrors(prev => ({
+            ...prev,
+            [msgId]: ''
+          }))
+        }, 10000)
+        return () => clearTimeout(timer)
+      }
+    })
+  }, [errors])
 
   const handleSummarize = async (id) => {
     const message = messages.find(msg => msg.id === id)
@@ -20,10 +28,19 @@ const ChatWindow = ({ messages, setMessages }) => {
     try {
       const summary = await summarizeText(message.text)
       message.summary = summary
+      message.processed = true
       setMessages([...messages])
+      // Clear error if successful
+      setErrors(prev => ({
+        ...prev,
+        [id]: ''
+      }))
     } catch (error) {
       console.error("Summarization error:", error)
-      setError("Unable to summarize the text. The Summarizer API is not usable on this device.")
+      setErrors(prev => ({
+        ...prev,
+        [id]: "Unable to summarize the text. The Summarizer API is not usable on this device."
+      }))
     }
     setLoadingMessageId(null)
   }
@@ -34,10 +51,19 @@ const ChatWindow = ({ messages, setMessages }) => {
     try {
       const translation = await translateText(message.text, language)
       message.translation = translation
+      message.processed = true
       setMessages([...messages])
+      // Clear error if successful
+      setErrors(prev => ({
+        ...prev,
+        [id]: ''
+      }))
     } catch (error) {
       console.error("Translation error:", error)
-      setError("Unable to create translator for the given source and target language.")
+      setErrors(prev => ({
+        ...prev,
+        [id]: "Unable to create translator for the given source and target language."
+      }))
     }
     setLoadingMessageId(null)
   }
@@ -46,34 +72,61 @@ const ChatWindow = ({ messages, setMessages }) => {
     <div className="sm:p-4 lg:pt-4 lg:px-10 lg:mb-[7rem] lg:w-3/4 mx-auto flex flex-col gap-4">
       {messages.map((msg) => (
         <div key={msg.id} className="flex flex-col p-4 shadow-lg text-[1rem]">
-          <p className="text-[#fff] mb-2 bg-[#111111] p-4 rounded-lg max-w-full lg:max-w-[30rem] shadow-lg ml-auto text-justify">{msg.text}</p>
-          <p className="text-sm p-2 w-max ml-auto text-neutral-500 mb-2">Language Detected: {getLanguageName(msg.language)}</p>
-          <div className="flex lg:flex-row flex-col items-center justify-end ml-auto gap-2 mb-4">
-            <button onClick={() => handleSummarize(msg.id)} className="bg-[#0a0] hover:bg-opacity-80 font-display font-bold border w-[10rem] px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2" disabled={loadingMessageId === msg.id}>
-              <NotepadText size={20} />
-              {loadingMessageId === msg.id ? "Summarizing..." : "Summarize"}
-            </button>
-            <button onClick={() => handleTranslate(msg.id)} className="bg-[#3b82f6] text-white hover:bg-opacity-80 font-display font-bold border w-[10rem] px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2" disabled={loadingMessageId === msg.id}>
-              <Languages size={20} className='text-white' />
-              {loadingMessageId === msg.id ? "Translating..." : "Translate"}
-            </button>
-            <select value={language} onChange={(e) => setLanguage(e.target.value)} className="text-[#000] bg-neutral-300 px-0 py-3 font-display w-[10rem] rounded-md outline-none">
-              <option value="en">English</option>
-              <option value="pt">Portuguese</option>
-              <option value="es">Spanish</option>
-              <option value="ru">Russian</option>
-              <option value="tr">Turkish</option>
-              <option value="fr">French</option>
-            </select>
-          </div>
+          <p className="text-[#fff] mb-2 bg-[#111111] p-4 rounded-lg max-w-full lg:max-w-[30rem] shadow-lg ml-auto text-justify">
+            {msg.text}
+          </p>
+          <p className="text-sm p-2 w-max ml-auto text-neutral-500 mb-2">
+            Language Detected: {getLanguageName(msg.language)}
+          </p>
+
+          {/* Only show buttons if message hasn't been processed */}
+          {!msg.processed && (
+            <div className="flex lg:flex-row flex-col items-center justify-end ml-auto gap-2 mb-4">
+              <button
+                onClick={() => handleSummarize(msg.id)}
+                className="bg-[#0a0] hover:bg-opacity-80 font-display font-bold border w-[10rem] px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                disabled={loadingMessageId === msg.id}
+              >
+                <NotepadText size={20} />
+                {loadingMessageId === msg.id ? "Summarizing..." : "Summarize"}
+              </button>
+              <button
+                onClick={() => handleTranslate(msg.id)}
+                className="bg-[#3b82f6] text-white hover:bg-opacity-80 font-display font-bold border w-[10rem] px-6 py-3 border-neutral-800 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                disabled={loadingMessageId === msg.id}
+              >
+                <Languages size={20} className='text-white' />
+                {loadingMessageId === msg.id ? "Translating..." : "Translate"}
+              </button>
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="text-[#000] bg-neutral-300 px-0 py-3 font-display w-[10rem] rounded-md outline-none"
+              >
+                <option value="en">English</option>
+                <option value="pt">Portuguese</option>
+                <option value="es">Spanish</option>
+                <option value="ru">Russian</option>
+                <option value="tr">Turkish</option>
+                <option value="fr">French</option>
+              </select>
+            </div>
+          )}
+
           {msg.summary && (
-            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-4 rounded-lg max-w-full lg:max-w-[40rem] border border-neutral-800 shadow-lg">Summary: {msg.summary}</p>
+            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-4 rounded-lg max-w-full lg:max-w-[40rem] border border-neutral-800 shadow-lg">
+              Summary: {msg.summary}
+            </p>
           )}
           {msg.translation && (
-            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-4 rounded-lg max-w-full lg:max-w-[40rem] border border-neutral-800 shadow-lg">Translation: {msg.translation}</p>
+            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-4 rounded-lg max-w-full lg:max-w-[40rem] border border-neutral-800 shadow-lg">
+              {msg.translation}
+            </p>
           )}
-          {error && (
-            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-red-600 p-2 rounded-lg max-w-full lg:max-w-[40rem] border border-neutral-800 shadow-lg">{error}</p>
+          {errors[msg.id] && (
+            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-red-600 p-2 rounded-lg max-w-full lg:max-w-[40rem] border border-neutral-800 shadow-lg">
+              {errors[msg.id]}
+            </p>
           )}
         </div>
       ))}
