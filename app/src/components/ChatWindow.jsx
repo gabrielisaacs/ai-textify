@@ -21,6 +21,7 @@ const ChatWindow = ({ messages, setMessages }) => {
     setLoadingMessageId(id)
     try {
       const summary = await summarizeText(message.text)
+      message.systemMessage = `I detected that the text is in ${getLanguageName(message.language)}. I've generated a concise summary of the content.`
       message.summary = summary
       message.processed = true
       setMessages([...messages])
@@ -43,6 +44,7 @@ const ChatWindow = ({ messages, setMessages }) => {
     setLoadingMessageId(id)
     try {
       const translation = await translateText(message.text, language)
+      message.systemMessage = `I detected that the text is in ${getLanguageName(message.language)}. I've translated it to ${getLanguageName(language)}.`
       message.translation = translation
       message.processed = true
       setMessages([...messages])
@@ -61,12 +63,13 @@ const ChatWindow = ({ messages, setMessages }) => {
   }
 
   return (
-    <div className="sm:p-4 lg:pt-4 lg:px-10 lg:mb-[7rem] lg:w-3/4 mx-auto flex flex-col gap-4">
+    <div className="sm:p-4 lg:pt-4 lg:px-10 lg:mb-[7rem] lg:w-3/4 w-full mx-auto flex flex-col gap-4">
       {messages.map((msg) => (
-        <div key={msg.id} className="flex flex-col p-4 shadow-lg text-[1rem]">
-          <p className="text-[#fff] mb-2 bg-[#111111] p-4 rounded-lg max-w-full lg:max-w-[30rem] shadow-lg ml-auto text-justify">
+        <div key={msg.id} className="flex flex-col py-4 lg:p-4 shadow-lg text-[1rem]">
+          <p className="text-[#fff] mb-2 bg-neutral-900 border border-neutral-800 p-4 rounded-lg w-[17rem] lg:max-w-[30rem] shadow-lg ml-auto text-justify">
             {msg.text}
           </p>
+
           <p className="text-sm p-2 w-max ml-auto text-neutral-500 mb-2">
             Language Detected: {getLanguageName(msg.language)}
           </p>
@@ -104,18 +107,27 @@ const ChatWindow = ({ messages, setMessages }) => {
             </div>
           )}
 
+          {msg.systemMessage && (
+            <div className="flex flex-row w-[18rem] lg:max-w-[40rem] mb-2 mt-4 gap-2">
+              <img src="/logo.svg" alt="logo" className="w-4 h-4 mt-[2px]" />
+              <p className="text-neutral-300 text-sm">
+                {msg.systemMessage}
+              </p>
+            </div>
+          )}
+
           {msg.summary && (
-            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-4 rounded-lg max-w-full lg:max-w-[40rem] border border-neutral-800 shadow-lg">
-              Summary: {msg.summary}
+            <p className="text-[1rem] text-[#fff] mt-2 mb-6 bg-[#000] p-4 rounded-lg w-[18rem] lg:max-w-[40rem] border border-neutral-800 shadow-lg">
+              {msg.summary}
             </p>
           )}
           {msg.translation && (
-            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-[#000] p-4 rounded-lg max-w-full lg:max-w-[40rem] border border-neutral-800 shadow-lg">
-              Translation: {msg.translation}
+            <p className="text-[1rem] text-[#fff] mt-2 mb-6 bg-[#000] p-4 rounded-lg w-[18rem] lg:max-w-[40rem] border border-neutral-800 shadow-lg">
+              {msg.translation}
             </p>
           )}
           {errors[msg.id] && (
-            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-red-600 p-2 rounded-lg max-w-full lg:max-w-[40rem] border border-neutral-800 shadow-lg">
+            <p className="text-[1rem] text-[#fff] mt-2 mb-2 bg-red-600 p-2 rounded-lg w-[18rem] lg:max-w-[40rem] border border-neutral-800 shadow-lg">
               {errors[msg.id]}
             </p>
           )}
