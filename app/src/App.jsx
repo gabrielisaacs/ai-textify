@@ -43,13 +43,19 @@ const App = () => {
         console.error("Language detector is not usable.")
         return "unknown"
       }
+
+      const options = {}
+
+      // Only add token if we're in production
+      if (window.location.hostname !== 'localhost') {
+        options.apiToken = process.env.REACT_APP_LANG_DETECTION_API_TOKEN
+      }
+
       if (canDetect === 'readily') {
-        detector = await self.ai.languageDetector.create({
-          apiToken: process.env.REACT_APP_LANG_DETECTION_API_TOKEN
-        })
+        detector = await self.ai.languageDetector.create(options)
       } else if (canDetect === 'after-download') {
         detector = await self.ai.languageDetector.create({
-          apiToken: process.env.REACT_APP_LANG_DETECTION_API_TOKEN,
+          ...options,
           monitor(m) {
             m.addEventListener('downloadprogress', (e) => {
               console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`)
@@ -62,8 +68,6 @@ const App = () => {
       const results = await detector.detect(text)
       if (results.length > 0 && results[0].confidence > 0.5) {
         return results[0].detectedLanguage
-      } else {
-        return "unknown"
       }
     }
     return "unknown"

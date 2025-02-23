@@ -90,19 +90,23 @@ const summarizeText = async (text) => {
     if (available === 'no') {
       throw new Error('Summarizer API not usable')
     }
+
+    const options = {
+      type: 'tl;dr',
+      format: 'plain-text',
+      length: 'short'
+    }
+
+    // Only add token if we're in production
+    if (window.location.hostname !== 'localhost') {
+      options.apiToken = process.env.REACT_APP_SUMMARIZATION_API_TOKEN
+    }
+
     if (available === 'readily') {
-      summarizer = await self.ai.summarizer.create({
-        apiToken: process.env.REACT_APP_SUMMARIZATION_API_TOKEN,
-        type: 'tl;dr',
-        format: 'plain-text',
-        length: 'short'
-      })
+      summarizer = await self.ai.summarizer.create(options)
     } else if (available === 'after-download') {
       summarizer = await self.ai.summarizer.create({
-        apiToken: process.env.REACT_APP_SUMMARIZATION_API_TOKEN,
-        type: 'tl;dr',
-        format: 'plain-text',
-        length: 'short',
+        ...options,
         monitor(m) {
           m.addEventListener('downloadprogress', (e) => {
             console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`)
@@ -122,13 +126,24 @@ const translateText = async (text, targetLanguage) => {
   if ('ai' in self && 'translator' in self.ai) {
     const translatorCapabilities = await self.ai.translator.capabilities()
     const availability = translatorCapabilities.languagePairAvailable('en', targetLanguage)
+
     if (availability === 'no') {
       throw new Error('Language pair not supported')
-    } else if (availability === 'after-download') {
+    }
+
+    const options = {
+      sourceLanguage: 'en',
+      targetLanguage: targetLanguage
+    }
+
+    // Only add token if we're in production
+    if (window.location.hostname !== 'localhost') {
+      options.apiToken = process.env.REACT_APP_TRANSLATOR_API_TOKEN
+    }
+
+    if (availability === 'after-download') {
       const translator = await self.ai.translator.create({
-        apiToken: process.env.REACT_APP_TRANSLATOR_API_TOKEN,
-        sourceLanguage: 'en',
-        targetLanguage: targetLanguage,
+        ...options,
         monitor(m) {
           m.addEventListener('downloadprogress', (e) => {
             console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`)
@@ -139,11 +154,7 @@ const translateText = async (text, targetLanguage) => {
       const translation = await translator.translate(text)
       return translation
     } else {
-      const translator = await self.ai.translator.create({
-        apiToken: process.env.REACT_APP_TRANSLATOR_API_TOKEN,
-        sourceLanguage: 'en',
-        targetLanguage: targetLanguage
-      })
+      const translator = await self.ai.translator.create(options)
       const translation = await translator.translate(text)
       return translation
     }
