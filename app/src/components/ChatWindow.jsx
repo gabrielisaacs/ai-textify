@@ -142,7 +142,6 @@ const summarizeText = async (text) => {
       length: 'short'
     }
 
-    // Only add token if we're in production
     if (window.location.hostname !== 'localhost') {
       options.apiToken = process.env.REACT_APP_SUMMARIZATION_API_TOKEN
     }
@@ -181,7 +180,6 @@ const translateText = async (text, targetLanguage) => {
       targetLanguage: targetLanguage
     }
 
-    // Only add token if we're in production
     if (window.location.hostname !== 'localhost') {
       options.apiToken = process.env.REACT_APP_TRANSLATOR_API_TOKEN
     }
