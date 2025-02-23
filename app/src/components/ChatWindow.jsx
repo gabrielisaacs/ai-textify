@@ -62,6 +62,7 @@ const ChatWindow = ({ messages, setMessages }) => {
     setLoadingMessageId(null)
   }
 
+
   return (
     <div className="sm:p-4 lg:pt-4 lg:px-10 lg:mb-[7rem] lg:w-3/4 w-full mx-auto flex flex-col gap-4">
       {messages.map((msg) => (
@@ -154,10 +155,6 @@ const summarizeText = async (text) => {
       length: 'short'
     }
 
-    if (window.location.hostname !== 'localhost') {
-      options.apiToken = process.env.REACT_APP_SUMMARIZATION_API_TOKEN
-    }
-
     if (available === 'readily') {
       summarizer = await self.ai.summarizer.create(options)
     } else if (available === 'after-download') {
@@ -190,10 +187,6 @@ const translateText = async (text, targetLanguage) => {
     const options = {
       sourceLanguage: 'en',
       targetLanguage: targetLanguage
-    }
-
-    if (window.location.hostname !== 'localhost') {
-      options.apiToken = process.env.REACT_APP_TRANSLATOR_API_TOKEN
     }
 
     if (availability === 'after-download') {

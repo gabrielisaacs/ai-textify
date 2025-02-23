@@ -20,12 +20,10 @@ const App = () => {
     const newMessage = { text, language: "detecting...", id: Date.now() }
     setMessages([...messages, newMessage])
 
-    // Detect language
     const detectedLanguage = await detectLanguage(text)
     newMessage.language = detectedLanguage
     setMessages([...messages, newMessage])
 
-    // Summarize if needed
     if (text.length > 150 && detectedLanguage === "en") {
       newMessage.summarize = true
     }
@@ -44,18 +42,10 @@ const App = () => {
         return "unknown"
       }
 
-      const options = {}
-
-      // Only add token if we're in production
-      if (window.location.hostname !== 'localhost') {
-        options.apiToken = process.env.REACT_APP_LANG_DETECTION_API_TOKEN
-      }
-
       if (canDetect === 'readily') {
-        detector = await self.ai.languageDetector.create(options)
+        detector = await self.ai.languageDetector.create()
       } else if (canDetect === 'after-download') {
         detector = await self.ai.languageDetector.create({
-          ...options,
           monitor(m) {
             m.addEventListener('downloadprogress', (e) => {
               console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`)
